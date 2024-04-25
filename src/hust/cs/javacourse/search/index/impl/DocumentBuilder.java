@@ -26,7 +26,7 @@ public class DocumentBuilder extends AbstractDocumentBuilder {
      * </pre>
      */
     @Override
-    public AbstractDocument build(int docId, String docPath, AbstractTermTupleStream termTupleStream) {
+    public Document build(int docId, String docPath, AbstractTermTupleStream termTupleStream) {
         //创建文档的termTupleList
         List<AbstractTermTuple> termTupleList = new ArrayList<>();
         AbstractTermTuple termTuple;
@@ -50,7 +50,7 @@ public class DocumentBuilder extends AbstractDocumentBuilder {
      * </pre>
      */
     @Override
-    public AbstractDocument build(int docId, String docPath, File file) {
+    public Document build(int docId, String docPath, File file) {
         try {
             //创建流
             TermTupleFilter termTupleFilter = new TermTupleFilter(new TermTupleScanner(new BufferedReader(

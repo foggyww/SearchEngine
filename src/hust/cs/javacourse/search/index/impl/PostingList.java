@@ -37,8 +37,8 @@ public class PostingList extends AbstractPostingList {
     }
 
     @Override
-    public AbstractPosting get(int index) {
-        return list.get(index);
+    public Posting get(int index) {
+        return (Posting) list.get(index);
     }
 
     @Override

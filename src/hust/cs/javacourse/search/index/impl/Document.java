@@ -51,8 +51,8 @@ public class Document extends AbstractDocument {
     }
 
     @Override
-    public AbstractTermTuple getTuple(int index) {
-        return tuples.get(index);
+    public TermTuple getTuple(int index) {
+        return (TermTuple) tuples.get(index);
     }
 
     @Override

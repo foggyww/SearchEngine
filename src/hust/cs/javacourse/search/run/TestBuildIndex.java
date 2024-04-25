@@ -34,23 +34,10 @@ public class TestBuildIndex {
             index.addDocument(document);
             id++;
         }
+        index.optimize();
         System.out.println(index);
-        try {
-            File file = new File(Config.INDEX_DIR+"index");
+        File file = new File(Config.INDEX_DIR+"index");
+        index.save(file);
 
-            if(file.exists()){
-                if(!file.delete()){
-                    throw new IOException();
-                }
-            }
-
-            if(file.createNewFile()){
-                index.save(file);
-            }else{
-                throw new IOException();
-            }
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
     }
 }

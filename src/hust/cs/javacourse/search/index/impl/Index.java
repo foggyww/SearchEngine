@@ -20,7 +20,7 @@ public class Index extends AbstractIndex {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Index : {\n");
         for (AbstractTerm term : getDictionary()) {
-            stringBuilder.append(term).append(":\n");
+            stringBuilder.append(term).append(":");
             PostingList postingList =(PostingList)termToPostingListMapping.get(term);
             stringBuilder.append(postingList);
         }
@@ -84,11 +84,11 @@ public class Index extends AbstractIndex {
      * </pre>
      */
     @Override
-    public void load(File file) {
+    public void load(File file){
         try {
             readObject(new ObjectInputStream(Files.newInputStream(file.toPath())));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -101,9 +101,13 @@ public class Index extends AbstractIndex {
     @Override
     public void save(File file) {
         try {
+            if(file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
             writeObject(new ObjectOutputStream(Files.newOutputStream(file.toPath())));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -114,8 +118,8 @@ public class Index extends AbstractIndex {
      * @return ：指定单词的PostingList;如果索引字典没有该单词，则返回null
      */
     @Override
-    public AbstractPostingList search(AbstractTerm term) {
-        return termToPostingListMapping.get(term);
+    public PostingList search(AbstractTerm term) {
+        return (PostingList) termToPostingListMapping.get(term);
     }
 
     /**
