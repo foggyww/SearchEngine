@@ -1,13 +1,10 @@
 package hust.cs.javacourse.search.index.impl;
 
-import hust.cs.javacourse.search.index.AbstractDocument;
-import hust.cs.javacourse.search.index.AbstractIndex;
-import hust.cs.javacourse.search.index.AbstractPostingList;
-import hust.cs.javacourse.search.index.AbstractTerm;
-import java.io.File;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Set;
+import hust.cs.javacourse.search.index.*;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.util.*;
 
 /**
  * AbstractIndex的具体实现类
@@ -20,7 +17,15 @@ public class Index extends AbstractIndex {
      */
     @Override
     public String toString() {
-        return null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Index : {\n");
+        for (AbstractTerm term : getDictionary()) {
+            stringBuilder.append(term).append(":\n");
+            PostingList postingList =(PostingList)termToPostingListMapping.get(term);
+            stringBuilder.append(postingList);
+        }
+        stringBuilder.append("}\n");
+        return stringBuilder.toString();
     }
 
     /**
@@ -30,7 +35,46 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void addDocument(AbstractDocument document) {
+        //建立Id和路径的索引
+        docIdToDocPathMapping.put(document.getDocId(), document.getDocPath());
+        //建立该文档内每个term与posting的对应关系
+        Map<AbstractTerm,Posting> map = new HashMap<>();
+        //遍历该文档的所有TermTuple
+        for (AbstractTermTuple tuple : document.getTuples()) {
+            //如果已经创建了该term的posting
+            if(map.containsKey(tuple.term)){
+                Posting nowPosting = map.get(tuple.term);
+                nowPosting.addFreq(tuple.freq);
+                nowPosting.addPosition(tuple.curPos);
+            }
+            //如果还未创建该term的posting
+            else{
+                ArrayList<Integer> list = new ArrayList<>();
+                list.add(tuple.curPos);
+                Posting posting = new Posting(document.getDocId(),tuple.freq,list);
+                map.put(tuple.term,posting);
+            }
+        }
+        //将该文档的所有posting加入到termToPostingListMapping
+        map.forEach((abstractTerm,posting)->{
+            posting.sort();
+            putToTermToPostingListMapping(abstractTerm,posting);
+        });
+    }
 
+    /**
+     * 将指定的term和posting的对应关系添加到termToPostingListMapping中
+     * @param term 要添加的term
+     * @param posting 对应的posting
+     */
+    private void putToTermToPostingListMapping(AbstractTerm term,Posting posting){
+        if(termToPostingListMapping.containsKey(term)){
+            termToPostingListMapping.get(term).add(posting);
+        }else{
+            PostingList postingList = new PostingList();
+            postingList.add(posting);
+            termToPostingListMapping.put(term,postingList);
+        }
     }
 
     /**
@@ -41,7 +85,11 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void load(File file) {
-
+        try {
+            readObject(new ObjectInputStream(Files.newInputStream(file.toPath())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -52,7 +100,11 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void save(File file) {
-
+        try {
+            writeObject(new ObjectOutputStream(Files.newOutputStream(file.toPath())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -63,7 +115,7 @@ public class Index extends AbstractIndex {
      */
     @Override
     public AbstractPostingList search(AbstractTerm term) {
-        return null;
+        return termToPostingListMapping.get(term);
     }
 
     /**
@@ -73,7 +125,7 @@ public class Index extends AbstractIndex {
      */
     @Override
     public Set<AbstractTerm> getDictionary() {
-        return null;
+        return termToPostingListMapping.keySet();
     }
 
     /**
@@ -86,7 +138,13 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void optimize() {
-
+        for (AbstractTerm term : getDictionary()) {
+            AbstractPostingList postingList = termToPostingListMapping.get(term);
+            postingList.sort();
+            for (int i = 0; i < postingList.size(); i++) {
+                postingList.get(i).sort();
+            }
+        }
     }
 
     /**
@@ -97,7 +155,7 @@ public class Index extends AbstractIndex {
      */
     @Override
     public String getDocName(int docId) {
-        return null;
+        return docIdToDocPathMapping.get(docId);
     }
 
     /**
@@ -107,7 +165,12 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void writeObject(ObjectOutputStream out) {
-
+        try {
+            out.writeObject(this.docIdToDocPathMapping);
+            out.writeObject(this.termToPostingListMapping);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -117,6 +180,12 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void readObject(ObjectInputStream in) {
+        try {
+            this.docIdToDocPathMapping = (Map<Integer, String>) in.readObject();
+            this.termToPostingListMapping = (Map<AbstractTerm, AbstractPostingList>) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 }
