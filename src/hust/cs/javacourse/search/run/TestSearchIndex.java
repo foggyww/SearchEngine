@@ -18,7 +18,7 @@ public class TestSearchIndex {
     public static void main(String[] args){
         IndexSearcher indexSearcher =new IndexSearcher();
         indexSearcher.open(Config.INDEX_DIR+"index.dat");
-        Hit[] hits = indexSearcher.search(new Term("coronavirus"),new SimpleSorter());
+        Hit[] hits = indexSearcher.search(new Term("activity"),new SimpleSorter());
         for(AbstractHit hit : hits){
             System.out.println(hit);
         }

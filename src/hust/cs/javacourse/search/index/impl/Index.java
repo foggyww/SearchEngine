@@ -60,24 +60,16 @@ public class Index extends AbstractIndex {
             }
         }
         //将该文档的所有posting加入到termToPostingListMapping
-        map.forEach((abstractTerm,posting)->{
+        for(AbstractTerm abstractTerm : map.keySet()){
+            Posting posting = map.get(abstractTerm);
             posting.sort();
-            putToTermToPostingListMapping(abstractTerm,posting);
-        });
-    }
-
-    /**
-     * 将指定的term和posting的对应关系添加到termToPostingListMapping中
-     * @param term 要添加的term
-     * @param posting 对应的posting
-     */
-    private void putToTermToPostingListMapping(AbstractTerm term,Posting posting){
-        if(termToPostingListMapping.containsKey(term)){
-            termToPostingListMapping.get(term).add(posting);
-        }else{
-            PostingList postingList = new PostingList();
-            postingList.add(posting);
-            termToPostingListMapping.put(term,postingList);
+            if(termToPostingListMapping.containsKey(abstractTerm)){
+                termToPostingListMapping.get(abstractTerm).add(posting);
+            }else{
+                PostingList postingList = new PostingList();
+                postingList.add(posting);
+                termToPostingListMapping.put(abstractTerm,postingList);
+            }
         }
     }
 

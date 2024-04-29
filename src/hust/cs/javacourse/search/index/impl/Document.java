@@ -3,6 +3,7 @@ package hust.cs.javacourse.search.index.impl;
 import hust.cs.javacourse.search.index.AbstractDocument;
 import hust.cs.javacourse.search.index.AbstractTermTuple;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class Document extends AbstractDocument {
@@ -72,6 +73,18 @@ public class Document extends AbstractDocument {
         }
         stringBuilder.append("}\n");
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Document){
+            Document document = (Document) obj;
+            HashSet<AbstractTermTuple> set1 = new HashSet<>(document.tuples);
+            HashSet<AbstractTermTuple> set2 = new HashSet<>(this.tuples);
+            boolean setEquals = set1.equals(set2);
+            return this.docId==document.docId&&this.docPath.equals(document.docPath)&&setEquals;
+        }
+        return super.equals(obj);
     }
 }
 

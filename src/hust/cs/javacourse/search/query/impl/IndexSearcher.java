@@ -38,6 +38,7 @@ public class IndexSearcher extends AbstractIndexSearcher {
         if(!isOpen) throw new RuntimeException("还未打开Index文件");
         //提取该单词的PostingList
         PostingList postingList = (PostingList) index.termToPostingListMapping.get(queryTerm);
+        if (postingList==null) return new Hit[0];
         List<Hit> hits = new ArrayList<>();
         //遍历PostingList，创建Hit
         for (int i = 0; i < postingList.size(); i++) {
