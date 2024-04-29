@@ -10,6 +10,10 @@ import java.util.*;
  * AbstractIndex的具体实现类
  */
 public class Index extends AbstractIndex {
+
+    public Index(){
+
+    }
     /**
      * 返回索引的字符串表示
      *

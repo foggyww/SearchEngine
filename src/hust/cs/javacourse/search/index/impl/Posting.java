@@ -1,15 +1,19 @@
 package hust.cs.javacourse.search.index.impl;
 
 import hust.cs.javacourse.search.index.AbstractPosting;
-import javafx.geometry.Pos;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class Posting extends AbstractPosting {
+
+    public Posting(){
+
+    }
 
     /**
      * 构造函数
@@ -30,7 +34,11 @@ public class Posting extends AbstractPosting {
     public boolean equals(Object obj) {
         if(obj instanceof AbstractPosting){
             Posting tarPosting = (Posting) obj;
-            return this.docId==tarPosting.docId&&this.freq==tarPosting.freq&&this.positions.equals(tarPosting.positions);
+            boolean positionsEqual;
+            HashSet<Integer> set1 = new HashSet<>(this.positions);
+            HashSet<Integer> set2 = new HashSet<>(tarPosting.positions);
+            positionsEqual = set1.equals(set2);
+            return this.docId==tarPosting.docId&&this.freq==tarPosting.freq&&positionsEqual;
         }else{
             return false;
         }
@@ -129,7 +137,6 @@ public class Posting extends AbstractPosting {
         try {
             this.docId = in.readInt();
             this.freq = in.readInt();
-            Object obj = in.readObject();
             this.positions = (List<Integer>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

@@ -75,9 +75,14 @@ public class Hit extends AbstractHit {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("docId :").append(docId).append(" docPath :").append(docPath).append("\ntermPostingMapping :{\n");
+        stringBuilder.append("docId :").append(docId).append("\n")
+                .append("docPath :")
+                .append(docPath).append("\n")
+                .append("score :").append((int) score).append("\n")
+                .append("content :").append(content).append("\n")
+                .append("termPostingMapping :{\n");
         termPostingMapping.forEach((term,posting)->{
-            stringBuilder.append("term :").append(term).append(" posting :").append(posting.toString()).append("\n");
+            stringBuilder.append("term :").append(term).append("----> posting :").append(posting.toString()).append("\n");
         });
         stringBuilder.append("}\n");
         return stringBuilder.toString();
@@ -90,6 +95,6 @@ public class Hit extends AbstractHit {
      */
     @Override
     public int compareTo(AbstractHit o) {
-        return (int)(this.score - o.getScore());
+        return (int)( this.score- o.getScore() );
     }
 }

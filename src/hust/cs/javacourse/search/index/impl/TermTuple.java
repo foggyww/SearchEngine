@@ -4,6 +4,10 @@ import hust.cs.javacourse.search.index.AbstractTermTuple;
 
 public class TermTuple extends AbstractTermTuple {
 
+    public TermTuple(){
+
+    }
+
     public TermTuple(Term term,int curPos){
         this.term = term;
         this.curPos = curPos;
@@ -16,9 +20,9 @@ public class TermTuple extends AbstractTermTuple {
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof AbstractTermTuple){
+        if(obj instanceof TermTuple){
             AbstractTermTuple tuple = (AbstractTermTuple) obj;
-            return this.term == tuple.term && this.curPos == tuple.curPos;
+            return this.term.equals(tuple.term) && this.curPos == tuple.curPos;
         }else{
             return false;
         }

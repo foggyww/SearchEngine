@@ -37,11 +37,7 @@ public class TermTupleScanner extends AbstractTermTupleScanner {
         try {
             //如果当前的单词列表还没用尽就继续返回一个单词
             if (words!=null &&wordIndex < words.size()) {
-                String word = getWord();
-                return new TermTuple(
-                        new Term(word),
-                        nowCurPos
-                );
+                return getTermTuple();
             }
             //如果当前单词列表用尽了，就再读一行
             //扫描的当前行
@@ -52,11 +48,7 @@ public class TermTupleScanner extends AbstractTermTupleScanner {
                 if(words.isEmpty()) continue;
                 //非空行，返回一个term
                 wordIndex = 0;
-                String word = getWord();
-                return new TermTuple(
-                        new Term(word),
-                        nowCurPos
-                );
+                return getTermTuple();
             }
             //读完了，关闭流返回null
             close();
@@ -67,10 +59,10 @@ public class TermTupleScanner extends AbstractTermTupleScanner {
     }
 
     /**
-     * 获取单词列表的当前下标单词，并将wordIndex和nowCurPos往后置一位
+     * 获取单词列表的当前下标单词对应的TermTuple，并将wordIndex和nowCurPos往后置一位
      * @return 当前下标单词
      */
-    public String getWord(){
+    public TermTuple getTermTuple(){
         String word;
         if(Config.IGNORE_CASE){ //如果构建时忽略大小写
             word= words.get(wordIndex).toLowerCase(Locale.ROOT);
@@ -78,9 +70,13 @@ public class TermTupleScanner extends AbstractTermTupleScanner {
             word = words.get(wordIndex);
         }
         //将索引和指针指向下一个
+        TermTuple termTuple = new TermTuple(
+                new Term(word),
+                nowCurPos
+        );
         wordIndex++;
         nowCurPos++;
-        return word;
+        return termTuple;
     }
 
 }

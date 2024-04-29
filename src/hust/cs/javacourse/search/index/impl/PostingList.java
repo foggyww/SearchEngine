@@ -17,7 +17,9 @@ public class PostingList extends AbstractPostingList {
 
     @Override
     public void add(AbstractPosting posting) {
-        this.list.add(posting);
+        if(!contains(posting)) {
+            this.list.add(posting);
+        }
     }
 
     @Override
@@ -33,7 +35,11 @@ public class PostingList extends AbstractPostingList {
 
     @Override
     public void add(List<AbstractPosting> postings) {
-        this.list.addAll(postings);
+        for (AbstractPosting posting : postings) {
+            if(!contains(posting)){
+                list.add(posting);
+            }
+        }
     }
 
     @Override

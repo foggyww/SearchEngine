@@ -1,10 +1,8 @@
 package hust.cs.javacourse.search.index.impl;
 
-import hust.cs.javacourse.search.index.AbstractDocument;
 import hust.cs.javacourse.search.index.AbstractDocumentBuilder;
 import hust.cs.javacourse.search.index.AbstractTermTuple;
 import hust.cs.javacourse.search.parse.AbstractTermTupleStream;
-import hust.cs.javacourse.search.parse.impl.TermTupleFilter;
 import hust.cs.javacourse.search.parse.impl.TermTupleScanner;
 
 import java.io.BufferedReader;
@@ -16,6 +14,9 @@ import java.util.List;
 
 public class DocumentBuilder extends AbstractDocumentBuilder {
 
+    public DocumentBuilder(){
+
+    }
     /**
      * <pre>
      * 由解析文本文档得到的TermTupleStream,构造Document对象.
@@ -27,11 +28,14 @@ public class DocumentBuilder extends AbstractDocumentBuilder {
      */
     @Override
     public Document build(int docId, String docPath, AbstractTermTupleStream termTupleStream) {
+
+//        AbstractTermTupleStream ts = new FilterReader(termTupleStream).getFilter();
+        AbstractTermTupleStream ts = termTupleStream;
         //创建文档的termTupleList
         List<AbstractTermTuple> termTupleList = new ArrayList<>();
         AbstractTermTuple termTuple;
         //遍历termTupleStream
-        while ((termTuple=termTupleStream.next())!=null){
+        while ((termTuple=ts.next())!=null){
             termTupleList.add(termTuple);
         }
         //创建文档
@@ -52,11 +56,11 @@ public class DocumentBuilder extends AbstractDocumentBuilder {
     @Override
     public Document build(int docId, String docPath, File file) {
         try {
-            //创建流
-            TermTupleFilter termTupleFilter = new TermTupleFilter(new TermTupleScanner(new BufferedReader(
-                    new FileReader(file))));
+
+            AbstractTermTupleStream ts = new TermTupleScanner(new BufferedReader(
+                    new FileReader(file)));
             //内部调用build，根据流创建
-            return build(docId,docPath,termTupleFilter);
+            return build(docId,docPath,ts);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

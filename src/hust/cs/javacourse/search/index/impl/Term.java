@@ -8,6 +8,10 @@ import java.io.ObjectOutputStream;
 
 public class Term extends AbstractTerm {
 
+    public Term(){
+
+    }
+
     public Term(String content){
         this.content = content;
     }
@@ -19,7 +23,7 @@ public class Term extends AbstractTerm {
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof AbstractTerm){
+        if(obj instanceof Term){
             return ((Term)obj).content.equals(this.content);
         }else{
             return false;

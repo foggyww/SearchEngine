@@ -23,20 +23,20 @@ public class TestBuildIndex {
      *  索引构建程序入口
      * @param args : 命令行参数
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
 
         DocumentBuilder documentBuilder = new DocumentBuilder();
         Index index = new Index();
         List<String> docPaths = FileUtil.list(Config.DOC_DIR,".txt");
         int id = 1;
         for (String docPath : docPaths) {
-            Document document= (Document) documentBuilder.build(id,docPath, new File(docPath));
+            Document document= documentBuilder.build(id,docPath, new File(docPath));
             index.addDocument(document);
             id++;
         }
         index.optimize();
         System.out.println(index);
-        File file = new File(Config.INDEX_DIR+"index");
+        File file = new File(Config.INDEX_DIR+"index.dat");
         index.save(file);
 
     }

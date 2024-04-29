@@ -7,6 +7,9 @@ import java.util.List;
 
 public class Document extends AbstractDocument {
 
+    public Document(){
+
+    }
     public Document(int docId, String docPath){
         super(docId, docPath);
     }
