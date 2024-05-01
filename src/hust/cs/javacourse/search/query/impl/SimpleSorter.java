@@ -19,6 +19,6 @@ public class SimpleSorter implements Sort {
         hit.getTermPostingMapping().forEach(((term, posting) -> {
             score.updateAndGet(v -> v + posting.getFreq());
         }));
-        return score.get();
+        return -score.get();
     }
 }

@@ -19,11 +19,10 @@ public class IndexBuilder extends AbstractIndexBuilder {
     public AbstractIndex buildIndex(String rootDirectory) {
         Index index = new Index();
         List<String> docPaths = FileUtil.list(rootDirectory);
-        int id = docId;
         for (String docPath : docPaths) {
-            Document document=(Document)docBuilder.build(id,docPath, new File(docPath));
+            Document document=(Document)docBuilder.build(docId,docPath, new File(docPath));
             index.addDocument(document);
-            id++;
+            docId++;
         }
         return index;
     }

@@ -80,10 +80,6 @@ public class IndexSearcher extends AbstractIndexSearcher {
                 int docId1 = posting1.getDocId();
                 int docId2 = posting2.getDocId();
                 if(docId1==docId2){
-                    String docPath = index.docIdToDocPathMapping.get(docId1);
-                    Map<AbstractTerm, AbstractPosting> map = new TreeMap<>();
-                    map.put(queryTerm1,posting1);
-                    map.put(queryTerm2,posting2);
                     hits.add(createHitWithTwoPosting(posting1,posting2,queryTerm1,queryTerm2,sorter));
                     index1++;
                     index2++;
@@ -124,6 +120,7 @@ public class IndexSearcher extends AbstractIndexSearcher {
             }
             while (index2<postingList2.size()){
                 hits.add( createHitWithPosting(postingList2.get(index2),queryTerm2,sorter));
+                index2++;
             }
         }
         List<AbstractHit> abstractHits = new ArrayList<>(hits);
